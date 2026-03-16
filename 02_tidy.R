@@ -16,9 +16,9 @@ library(palmerpenguins)
 data(iris)
 
 dir.create("data")  # creiamo la cartella data se non esiste
-#write.csv(iris, "data/iris.csv", row.names = FALSE)
-rm(iris)  # rimuoviamo iris per poi ricaricarlo con read_cs
-gc()
+write.csv(iris, "data/iris.csv", row.names = FALSE)
+rm(iris) # rimuoviamo iris per poi ricaricarlo con read_cs
+gc() # liberiamo memoria (gc = garbage collection)
 iris <- read.csv("data/iris.csv")
 
 # Guardiamo il dataset
