@@ -32,14 +32,6 @@ usethis::use_git()
 
 usethis::git_sitrep() # controlla se Git è configurato correttamente e se ci sono problemi da risolvere
 
-usethis::git_default_branch_rediscover()
-
-system("git remote remove upstream")
-system("git remote -v")
-
-usethis::git_default_branch_rediscover()
-
-system("git status")
 
 # ============================================================
 # Windows users (solo se i comandi sopra NON funzionano)
@@ -76,15 +68,16 @@ usethis::create_github_token()
 # (quando chiede "Enter password or token:", incolla il token e premi invio)
 gitcreds::gitcreds_set()
 
+# devo aver salvato il progetto su una cartella nel pc
 usethis::use_git()      # inizializza Git nella cartella del progetto (crea la cartella .git)
 
 
-usethis::use_github()    # collega a GitHub e fa il primo push
+usethis::use_github()    # collega a GitHub e fa il primo push (crea automaticamente la cartella)
 
 
 
+### 2 PARTE ####
 
-### 2 parte ####
 # --- 6)  Creare una repository su GitHub ---
 
 # --- 7)  Collegare il repository locale al repository GitHub ---
@@ -93,6 +86,11 @@ usethis::use_git_config(user.name = "Linda Frigioni", user.email = "linda.frigio
 system("git remote add origin https://github.com/linfri01/RStudio01")
 
 usethis::use_git_remote(name = "origin", url = "https://github.com/linfri01/RStudio01.git")
+usethis::use_git_remote(
+  name = "origin",
+  url = "https://github.com/linfri01/RStudio01.git",
+  overwrite = TRUE
+)
 
 # Controlliamo che il collegamento esista
 
@@ -120,6 +118,7 @@ system("git fetch upstream")
 # --- 10)  Unire i file docente con i propri ---
 
 system("git merge upstream/main")
+system("git merge upstream/main --allow-unrelated-histories")
 
 # Ora i file del corso sono presenti nella cartella locale
 
