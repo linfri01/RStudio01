@@ -28,6 +28,8 @@ usethis::use_git_config(
   user.email = "linda.frigioni@student.univaq.it"
 )
 
+usethis::use_git()
+
 usethis::git_sitrep() # controlla se Git è configurato correttamente e se ci sono problemi da risolvere
 
 usethis::git_default_branch_rediscover()
