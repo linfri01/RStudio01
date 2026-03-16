@@ -144,18 +144,24 @@ system("git status")
 # Mostra i file modificati o nuovi nella cartella
 system("git status")
 
+system('git commit -m "Aggiornamento 01_git_init.R"')
+
+system("git push origin master")
 # Questo passaggio è importante per evitare di caricare
 # file non desiderati (dataset, file temporanei, ecc.)
 
+# Possibilità di aggiornare il progetto dai file del docente in futuro
+system("git fetch upstream")
+system("git merge upstream/main")
 
 ### 2) AGGIUNGERE I FILE CHE VOGLIAMO SALVARE ----------------
 
 # È buona pratica aggiungere solo i file di codice modificati
 
-system("git add script_analisi.R")
+system("git add script_analisi.R") #script_analisi solo come esempio
 
 # In alternativa possiamo aggiungere più file
-# system("git add script_analisi.R grafico.R")
+ system("git add script_analisi.R grafico.R")
 
 
 ### 3) CREARE UN COMMIT -------------------------------------
@@ -163,7 +169,7 @@ system("git add script_analisi.R")
 # Il commit crea una nuova versione salvata del progetto
 # Il messaggio deve spiegare cosa è stato modificato
 
-system('git commit -m "nomescript.R"')
+system('git commit -m "01_git_init.R"')
 
 
 ### 4) INVIARE LE MODIFICHE SU GITHUB -----------------------
