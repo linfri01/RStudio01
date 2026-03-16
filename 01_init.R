@@ -15,7 +15,10 @@ nome
 
 
 ### 2) TIPI DI DATO ATOMICI ----------------------------------
-
+#In R, un tipo atomico (atomic type) è il tipo più semplice di dato, 
+#che non può essere ulteriormente suddiviso internamente. 
+#Sono i “mattoni base” con cui R costruisce i dati più complessi, 
+#come vettori, matrici o data frame.
 # I tipi atomici principali che incontreremo più spesso sono:
 # - logical   -> TRUE / FALSE
 # - integer   -> numeri interi con suffisso L
@@ -23,22 +26,30 @@ nome
 # - character -> testo
 
 logico <- TRUE
-intero <- 10L
+intero <- 10L # solo 10 di default è double(numeric), con L è integer
 doppio <- 10.5
 testo <- "ciao"
 
+# il suffisso L serve per indicare esplicitamente 
+#che un numero è di tipo intero (integer), 
+#invece che un numero a virgola mobile (double / numeric).
 logico
 intero
 doppio
 testo
+#R, di default, tratta tutti i numeri come double.
+#Aggiungendo L si risparmia memoria e si specifica che vogliamo un intero puro.
+#Utile ad esempio quando lavori con funzioni che richiedono numeri interi o con indici di array:
+# v <- c(10, 20, 30)
+# v[2L]   # sicuro che l'indice sia intero
 
-# class() dà la "classe" dell'oggetto
+# class() dà la "classe" dell'oggetto (comportamento, ruolo dell'oggetto)
 class(logico)
 class(intero)
 class(doppio)
 class(testo)
 
-# typeof() mostra il tipo interno
+# typeof() mostra il tipo atomico, interno (come è memorizzato l'oggetto)
 typeof(logico)
 typeof(intero)
 typeof(doppio)
@@ -100,7 +111,7 @@ typeof(v_num)
 # Se mescolo tipi diversi, R forza tutto verso un tipo comune
 v_misto <- c(1, 2, "tre", T)
 v_misto
-class(v_misto)   # character
+class(v_misto)   # character (se c'è un character, tutti character)
 
 # Lunghezza del vettore
 length(v_num)
@@ -158,9 +169,9 @@ class(habitat_f)
 levels(habitat_f)
 summary(habitat_f)
 
-# Factor ordinato
+# Factor ordinato (se non li ordino, di default li mette in ordine alfabetico)
 disturbo <- factor(c("basso", "alto", "medio", "basso"),
-                   levels = c("basso", "medio", "alto"),
+                   levels = c("basso", "medio", "alto"), #qui ordinoi livelli
                    ordered = TRUE)
 
 
@@ -168,12 +179,13 @@ disturbo
 levels(disturbo)
 
 disturbo_n <- factor(c("basso", "alto", "medio", "basso"))
-levels(disturbo_n)
+levels(disturbo_n) # non avendoli ordinati, li mette in ordine alfabetico
 
 ### 7) MATRICE -----------------------------------------------
 
 # Una matrice è una struttura bidimensionale
 # ma può contenere un solo tipo di dato
+# nella matrice uno e un solo tipo di elementto (o tutti numeri o tutti character)
 mat <- matrix(1:9, nrow = 3, ncol = 3)
 
 mat
@@ -208,12 +220,18 @@ df <- data.frame
 
 df
 class(df)
-str(df)
+str(df) # mostra la struttura del df
 
-df_t <- as.data.frame(t(df))
+df <- data.frame(
+  nome = c("Anna", "Luca", "Mario"),
+  quota = c(1200, 900, 1500),
+  età = c(23, 25, 22)
+)
+
+df_t <- as.data.frame(t(df)) #TRASPOSTA: colonne diventano righe
 str(df_t)
 
-# Estrazione colonne
+# Estrazione colonne (modi diversi, stesso risultato)
 df$quota
 df
 df[["quota"]]
@@ -251,6 +269,9 @@ str(tb)
 # 3. non usa row names come struttura importante
 # 4. è più "rigido" e prevedibile
 
+# altra differenza col tibble: il tibble non ha i rowNames (possono dare errpore, chiama le righe con numeri)
+# in alcuni casi tuttavia anche al tibble bisogna forzare l'assegnazione dei RowNames
+
 # Data frame: una colonna estratta con [, ] diventa spesso vettore
 df[, "quota"]
 class(df[, "quota"])
@@ -265,7 +286,7 @@ class(tb[["quota"]])
 
 # Il tibble non fa partial matching con $
 # Questo aiuta a evitare errori silenziosi
-tb$quo    # NULL, meglio che indovinare
+tb$quo   # NULL, meglio che indovinare
 
 
 ### 10) LISTE ------------------------------------------------
@@ -332,9 +353,13 @@ class(iris$Sepal.Length)
 typeof(iris$Sepal.Length)
 
 iris$Species
-class(iris$Species)
-typeof(iris$Species)
+class(iris$Species) # variabili categoriche (factor)
+typeof(iris$Species) # integer
 levels(iris$Species)
+#NB I factor in R sono rappresentati internamente come vettori di interi 
+# che indicano il livello corrispondente
+# I nomi “setosa”, “versicolor”, “virginica” sono memorizzati come livelli, 
+# mentre i dati veri sono numeri interi che puntano a questi livelli.
 
 # Estraggo solo alcune colonne
 iris[, c("Species", "Petal.Length")]
@@ -353,7 +378,13 @@ mean(iris$Petal.Length[iris$Species == "setosa"])
 mean(iris$Petal.Length[iris$Species == "versicolor"])
 mean(iris$Petal.Length[iris$Species == "virginica"])
 
+# iris$Species == "setosa" Questo è un confronto logico.
+# R guarda ogni elemento della colonna Species e verifica se è uguale a "setosa".
+# Restituisce un vettore logico (TRUE / FALSE) lungo quanto la colonna:
+# con [] R seleziona solo i valori corrispondenti a TRUE dalla colonna Petal.Lengt
+
+
 # Piccola visualizzazione finale in base R
-boxplot(Petal.Length ~ Species, data = iris,
+boxplot(Petal.Length ~ Species, data = iris, 
         main = "Petal length nelle tre specie di iris",
         ylab = "Petal Length")
