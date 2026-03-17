@@ -116,6 +116,7 @@ iris %>%
   filter(Petal.Length > 5)
 
 # Due condizioni insieme: AND (metto le condizioni separate da una virgola)
+# si usa == invece di =, perché quest'ultimo serve per assegnare valori
 iris %>%
   filter(Species == "virginica", Petal.Length > 5)
 
@@ -253,7 +254,7 @@ penguins_mod <- penguins |>
 
 # posso anche selezionare solo le specie che mi interessano invece di escludere Adelie
 penguins |> 
-  filter( species == "Gentoo" | species == "Chinstrap") 
+  filter( species == "Gentoo" | species == "Chinstrap")
 
 # posso farlo anche con %in% che è più comodo quando le specie sono tante
 # %in% è un operatore che verifica se un valore è presente in un vettore
@@ -360,9 +361,6 @@ penguins |>
 penguins |> 
   filter( (species == "Gentoo" & body_mass_g > 5500) | (species == "Adelie" & flipper_length_mm < 190) ) |> 
   select(species, island, flipper_length_mm, body_mass_g) # 93 osservazioni
-
-
-
 
 
 
