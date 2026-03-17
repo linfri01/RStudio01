@@ -81,8 +81,8 @@ iris |>
 
 iris[, c("Sepal.Length", "Species")]
 iris[, c(1, 5) ]
-# Posso cambiare l'ordine delle colonne
 
+# Posso cambiare l'ordine delle colonne
 iris_mod <- iris %>%
   select(Species, Petal.Length, Sepal.Length)
 
@@ -99,7 +99,7 @@ iris %>%
   select(specie = Species, petalo = Petal.Length)
 
 iris |> 
-  select(Species, everything())
+  select(Species, everything()) # tutto il resto dopo Species
 
 ### 6) FILTER(): FILTRARE LE RIGHE ---------------------------
 
@@ -115,7 +115,7 @@ iris %>%
 iris %>%
   filter(Petal.Length > 5)
 
-# Due condizioni insieme: AND
+# Due condizioni insieme: AND (metto le condizioni separate da una virgola)
 iris %>%
   filter(Species == "virginica", Petal.Length > 5)
 
@@ -123,7 +123,7 @@ iris %>%
 iris %>%
   filter(Species == "virginica" & Petal.Length > 5)
 
-# Condizione OR
+# Condizione OR (metto le condizioni separate da |)
 iris %>%
   filter(Species == "setosa" | Species == "versicolor")
 
@@ -145,7 +145,7 @@ iris_f <- iris |>
 ### 7) DIFFERENZA CON R BASE ---------------------------------
 
 # In base R:
-iris[iris$Petal.Length > 5, c("Species", "Petal.Length", "Petal.Width")]
+iris[iris$Petal.Length > 5, c("Species", "Petal.Length", "Petal.Width")] #c() serve per selezionare più colonne
 
 # In tidyverse:
 iris %>%
@@ -187,13 +187,13 @@ iris %>%
 
 
 # Per vedere bene le variabili disponibili
-glimpse(penguins)
+glimpse(penguins) # glimpse() è una funzione del tidyverse che mostra una panoramica del dataset
 data(penguins)
 ?glimpse ## ask for help
 
 View(penguins)
 head(penguins)
-str(penguins)
+str(penguins) # str() è una funzione base R che mostra la struttura del dataset
 
 ############################################################
 # ESERCIZI
@@ -247,9 +247,9 @@ penguins |>
 # e tieni solo species, bill_length_mm e bill_depth_mm
 
 penguins_mod <- penguins |> 
-  filter(species != "Adelie") |> 
+  filter(species != "Adelie") |> # != significa "diverso da"
   select(species, bill_length_mm, bill_depth_mm) |> 
-  mutate(species = droplevels(species))
+  mutate(species = droplevels(species)) # droplevels() serve a rimuovere i livelli inutilizzati dopo aver filtrato i dati
 
 # posso anche selezionare solo le specie che mi interessano invece di escludere Adelie
 penguins |> 
@@ -263,12 +263,26 @@ penguins |>
 ### ESERCIZIO 6
 # Mostra solo i pinguini con flipper_length_mm > 200
 # e body_mass_g < 5000
-
+penguins |> 
+  filter(flipper_length_mm > 200, body_mass_g < 5000)  # 81 osservazioni
 
 ### ESERCIZIO 7
 # Mostra solo i pinguini che appartengono
 # alle specie Adelie oppure Gentoo
 # e tieni solo species, island, body_mass_g
+
+penguins |> 
+  filter(species == "Adelie" | species == "Gentoo") |> 
+  select(species, island, body_mass_g) # 276 osservazioni
+
+penguins |> 
+  filter(species %in% c("Adelie", "Gentoo")) |> 
+  select(species, island, body_mass_g) # 276 osservazioni
+
+penguins %>% 
+  filter(species != "Chinstrap") %>% 
+  select(species, island, body_mass_g) # 276 osservazioni
+
 
 
 ### ESERCIZIO 8
@@ -276,33 +290,53 @@ penguins |>
 # con body_mass_g > 4500
 # e tieni solo species, island, body_mass_g, sex
 
+penguins |> 
+  filter(island == "Biscoe", body_mass_g > 4500) |> 
+  select(species, island, body_mass_g, sex) # 109 osservazioni
+
 
 ### ESERCIZIO 9
 # Seleziona tutte le colonne tranne year e sex
 # poi filtra solo i pinguini della specie Chinstrap
 
+penguins |> 
+  select(-year, -sex) |> 
+  filter(species == "Chinstrap") # 68 osservazioni
 
 ### ESERCIZIO 10
 # Mostra solo i pinguini con bill_length_mm > 45
 # e flipper_length_mm > 210
 # poi tieni solo species, bill_length_mm, flipper_length_mm
 
+penguins |> 
+  filter(bill_length_mm > 45, flipper_length_mm > 210) |> 
+  select(species, bill_length_mm, flipper_length_mm) # 86 osservazioni
+
 
 ### ESERCIZIO 11
 # Mostra solo i pinguini con sex mancante (NA)
 # e tieni solo species, island, sex
 
+penguins |> 
+  filter(is.na(sex)) |> 
+  select(species, island, sex) # 11 osservazioni
 
 ### ESERCIZIO 12
 # Mostra solo i pinguini con body_mass_g mancante (NA)
 # oppure bill_length_mm mancante (NA)
 
+penguins |> 
+  filter(is.na(body_mass_g) | is.na(bill_length_mm))  # 2 osservazioni
 
 ### ESERCIZIO 13
 # Mostra solo i pinguini che:
 # - stanno su Dream oppure Torgersen
 # - NON sono Gentoo
 # poi tieni solo species, island, bill_length_mm
+
+penguins |> 
+  filter( (island == "Dream" | island == "Torgersen") & species != "Gentoo") |> 
+  select(species, island, bill_length_mm) # 176 osservazioni
 
 
 ### ESERCIZIO 14
@@ -311,10 +345,26 @@ penguins |>
 # - flipper_length_mm maggiore di 190
 # poi tieni solo species, island, flipper_length_mm, body_mass_g
 
+penguins |> 
+  filter(body_mass_g > 4000, body_mass_g < 5000, flipper_length_mm > 190) |> 
+  select(species, island, flipper_length_mm, body_mass_g) # 97 osservazioni
+
 
 ### ESERCIZIO 15
 # Mostra solo i pinguini che soddisfano una di queste due condizioni:
 # - specie Gentoo e body_mass_g > 5500
-# OPPURE
+# OPPURE (OR, |)
 # - specie Adelie e flipper_length_mm < 190
 # poi tieni solo species, island, flipper_length_mm, body_mass_g
+
+penguins |> 
+  filter( (species == "Gentoo" & body_mass_g > 5500) | (species == "Adelie" & flipper_length_mm < 190) ) |> 
+  select(species, island, flipper_length_mm, body_mass_g) # 93 osservazioni
+
+
+
+
+
+
+
+
